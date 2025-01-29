@@ -20,4 +20,6 @@ public class ProductDTO {
 	
 	@NotNull
 	private long price;
+	
+	private String Category;
 }

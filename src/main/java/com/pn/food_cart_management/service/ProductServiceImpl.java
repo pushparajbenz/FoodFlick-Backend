@@ -54,6 +54,7 @@ public class ProductServiceImpl implements ProductService {
 			product.setName(p.getName());
 			product.setImage(p.getImage());
 			product.setPrice(p.getPrice());
+			product.setCategory(p.getCategory());
 			
 			productRepository.save(product);
 		} catch (Exception e) {
@@ -80,5 +81,12 @@ public class ProductServiceImpl implements ProductService {
 		}
 		return productRepository.findAllById(res);
 	}
+
+	@Override
+	public List<Product> findProductsByCategory(String category) {
+		
+		return productRepository.findByCategory(category);
+	}
+	
 
 }

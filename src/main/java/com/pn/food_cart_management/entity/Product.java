@@ -1,9 +1,12 @@
 package com.pn.food_cart_management.entity;
 
+
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -28,4 +31,5 @@ public class Product {
 	
 	private long price;
 
+	private String category;
 }

@@ -12,5 +12,6 @@ public interface ProductService {
 	public void updateProduct(Product p,long id);
 	public List<Product> fetchById(long id);
 	public List<Product> fetchByIds(long []ids);
+	public List<Product> findProductsByCategory(String category);
 	
 }

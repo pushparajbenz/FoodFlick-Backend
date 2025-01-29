@@ -100,5 +100,14 @@ public class ProductController {
 		logger.info("Fetched products by IDs: {}", products);
 		return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
 	}
+    @GetMapping("/category/{category}")
+    public ResponseEntity<List<Product>> findProductsByCategory(@PathVariable String category) {
+        List<Product> products = productservice.findProductsByCategory(category);
+        if (products.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(products);
+    }
+
 
 }
