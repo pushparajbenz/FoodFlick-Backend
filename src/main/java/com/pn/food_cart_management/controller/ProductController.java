@@ -14,10 +14,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.pn.food_cart_management.dto.ProductDTO;
 import com.pn.food_cart_management.entity.Product;
 import com.pn.food_cart_management.service.ProductService;
+
+import io.jsonwebtoken.io.IOException;
 
 
 @RestController
@@ -29,17 +34,21 @@ public class ProductController {
 
 	private static final Logger logger = LogManager.getLogger(ProductController.class);
 
-	@PostMapping("/admin/product")
-	public ResponseEntity<String> addProduct(@RequestBody Product p) {
-		logger.info("In Add Product Endpoint");
+	 @PostMapping("/admin/product")
+	    public ResponseEntity<String> addProduct(
+	            @RequestParam("name") String name,
+	            @RequestParam("price") long price,
+	            @RequestParam("category") String category,
+	            @RequestParam("image") MultipartFile image) throws java.io.IOException {
 
-		try {
-			this.productservice.addProduct(p);
-			return new ResponseEntity<>("Product Added", HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>("Unable to Add", HttpStatus.BAD_REQUEST);
-		}
-	}
+	        try {
+	            ProductDTO productDTO = new ProductDTO(name, image, price, category);
+	            productservice.addProduct(productDTO);
+	            return new ResponseEntity<>("Product Added Successfully", HttpStatus.OK);
+	        } catch (IOException e) {
+	            return new ResponseEntity<>("Error while saving product: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+	        }
+	    }
 
 	
 	@GetMapping("/user/fetch")

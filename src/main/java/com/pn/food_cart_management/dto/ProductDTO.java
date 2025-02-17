@@ -1,5 +1,7 @@
 package com.pn.food_cart_management.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,10 +18,11 @@ public class ProductDTO {
 	
 	private String name;
 
-	private String image;
+	private MultipartFile image;
 	
 	@NotNull
 	private long price;
 	
 	private String Category;
+
 }

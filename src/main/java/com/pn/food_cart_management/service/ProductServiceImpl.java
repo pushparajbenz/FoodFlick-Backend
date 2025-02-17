@@ -1,5 +1,6 @@
 package com.pn.food_cart_management.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +8,9 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.pn.food_cart_management.dto.ProductDTO;
 import com.pn.food_cart_management.entity.Product;
 import com.pn.food_cart_management.repository.CartRepository;
 import com.pn.food_cart_management.repository.ProductRepository;
@@ -21,13 +24,16 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	private CartRepository cartRepository;
 
-	public void addProduct(Product p) {
-		try {
-			productRepository.save(p);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+	@Override
+    public Product addProduct(ProductDTO productdto) throws IOException {
+        Product product = new Product();
+        product.setName(productdto.getName());
+        product.setPrice(productdto.getPrice());
+        product.setCategory(productdto.getCategory());
+        product.setImage(productdto.getImage().getBytes()); // Convert MultipartFile to byte array
+
+       return productRepository.save(product);
+    }
 
 	public List<Product> fetch() {
 		List<Product> ar = new ArrayList<>();
@@ -46,21 +52,23 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
-	public void updateProduct(Product p,long id) {
+	public void updateProduct(long id,ProductDTO productdto) throws IOException {
+        Optional<?> optionalProduct = (Optional<?>) productRepository.findById(id);
+        
+        if (optionalProduct.isPresent()) {
+            ProductDTO product = (ProductDTO) optionalProduct.get();
+            product.setName(productdto.getName());
+            product.setPrice(productdto.getPrice());
+            product.setCategory(productdto.getCategory());
+            product.setImage(productdto.getImage());
+            MultipartFile image =  productdto.getImage();
+            if (image != null && !image.isEmpty()) {
+                product.getImage(image.getBytes()); // Update image if a new one is uploaded
+            }
 
-		try {
-			Product product=productRepository.findById(id).get();
-			
-			product.setName(p.getName());
-			product.setImage(p.getImage());
-			product.setPrice(p.getPrice());
-			product.setCategory(p.getCategory());
-			
-			productRepository.save(product);
-		} catch (Exception e) {
-			throw e;
-		}
-	}
+            productRepository.save(product);
+        }
+    }
 
 	public List<Product> fetchById(long id) {
 		List<Product> res = new ArrayList<>();
@@ -87,6 +95,10 @@ public class ProductServiceImpl implements ProductService {
 		
 		return productRepository.findByCategory(category);
 	}
+
+	
+		
+	
 	
 
 }
